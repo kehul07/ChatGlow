@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "674114090172",
+    "project_id": "chatglow-2cbf0",
+    "storage_bucket": "chatglow-2cbf0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674114090172:android:7fac39f7ac453c0a090cb9",
+        "android_client_info": {
+          "package_name": "com.example.chat_grow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkvPz0cWZr4Lv20w0UglHMBL8hHj4RAmM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

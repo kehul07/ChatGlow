@@ -1,0 +1,41 @@
+buildscript {
+    ext.kotlin_version = '1.8.22' // Ensure this version matches across all usages
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:7.0.4'  // Ensure compatibility with Kotlin 1.8.22
+        classpath 'com.google.gms:google-services:4.3.10'
+
+    }
+}
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'org.jetbrains.kotlin' && !details.requested.name.contains('kotlin-gradle-plugin')) {
+                details.useVersion kotlin_version
+            }
+        }
+    }
+}
+
+
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
