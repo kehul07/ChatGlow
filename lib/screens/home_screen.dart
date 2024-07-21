@@ -4,6 +4,7 @@ import 'package:chat_grow/screens/profile_screen.dart';
 import 'package:chat_grow/widgets/chat_user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../main.dart';
 import '../models/chat_user.dart';
@@ -22,12 +23,14 @@ class _HomeScreenState extends State<HomeScreen> {
   //search users
   final List<ChatUser> searchUsers= [];
   bool _isSearching = false;
+  // late ChatUser i;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     APIs.getSelfInfo();
+     // i = APIs.me;
   }
 
   @override
@@ -48,12 +51,12 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-            leading: Icon(CupertinoIcons.home),
+            leading:const Icon(CupertinoIcons.home),
             title: _isSearching ? TextFormField(
-              decoration: InputDecoration(
+              decoration:const InputDecoration(
                 border: InputBorder.none,
                 hintText: "Name,Email...",
-              ),style: TextStyle(fontSize: 17,letterSpacing: 0.5),
+              ),style:const TextStyle(fontSize: 17,letterSpacing: 0.5),
               onChanged: (value){
                 searchUsers.clear();
                 for(var i in list){
@@ -66,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               },
               autofocus: true,
-            ) :Text("ChatGlow"),
+            ) :const Text("ChatGlow"),
             actions: [
               IconButton(onPressed: () {
                 setState(() {
@@ -81,12 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(mq.height * 0.05),
                     child: CachedNetworkImage(
-                      height: mq.height * 0.03,
-                      width: mq.height * 0.03,
+                      height: mq.height * 0.035,
+                      width: mq.height * 0.035,
                       fit: BoxFit.fill,
-                      imageUrl: APIs.user.photoURL.toString(),
+                      imageUrl:APIs.user.photoURL.toString(),
                       errorWidget: (context, url, error) => CircleAvatar(
-                        child: Icon(CupertinoIcons.person),
+                        child:const Icon(CupertinoIcons.person),
                       ),
                     ),
                   ),
@@ -114,7 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 //if data is loading
                 case ConnectionState.waiting:
                 case ConnectionState.none:
-                  return const Center(child: CircularProgressIndicator());
+                  // return const Center(child: CircularProgressIndicator());
+                  return SkeletonLoader();
 
                 //if some or all data is loaded then show it
                 case ConnectionState.active:
@@ -143,6 +147,62 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ),
       ),
+    );
+  }
+
+  Widget SkeletonLoader(){
+    return ListView.builder(
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 48.0,
+                  height: 48.0,
+                  color: Colors.white,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: double.infinity,
+                        height: 8.0,
+                        color: Colors.white,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 2.0),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 8.0,
+                        color: Colors.white,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 2.0),
+                      ),
+                      Container(
+                        width: 40.0,
+                        height: 8.0,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

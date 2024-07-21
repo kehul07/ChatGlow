@@ -97,10 +97,11 @@ class APIs {
       ChatUser user) {
     return firestore
         .collection("chats/${getConversationId(user.id)}/messages/")
+        .orderBy("sent",descending: true)
         .snapshots();
   }
 
-  static Future<void> sendMessage(ChatUser chatUser, String msg) async {
+  static Future<void> sendMessage(ChatUser chatUser, String msg , Type type) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Message message = Message(
         toId: chatUser.id,
@@ -108,7 +109,7 @@ class APIs {
         msg: msg,
         read: "",
         sent: time,
-        type: Type.text);
+        type: type);
     final ref = firestore
         .collection("chats/${getConversationId(chatUser.id)}/messages/");
     await ref.doc(time).set(message.toJson());
@@ -129,4 +130,33 @@ class APIs {
         .limit(1)
         .snapshots();
   }
+  static Future<void> sendChatImage(ChatUser chatuser,File file) async{
+    try {
+      final ext = file.path.split(".").last;
+      final ref = storage.ref().child("images/${getConversationId(chatuser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext");
+
+      // Upload the file and wait for completion
+      final uploadTask =
+      ref.putFile(file, SettableMetadata(contentType: "image/$ext"));
+      final snapshot = await uploadTask;
+
+      print("Data transferred: ${snapshot.bytesTransferred / 1000} KB");
+
+      // Get the download URL and update the user's profile image
+      final imageUrl = await ref.getDownloadURL();
+      await sendMessage(chatuser, imageUrl, Type.image);
+
+    } catch (e) {
+      print("Failed to send picture: $e");
+    }
+  }
+
+  static Future<String> getUserProfileImage() async{
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.uid)
+        .get();
+    return ChatUser.fromJson(userDoc as Map<String, dynamic>).image;
+  }
+
 }
