@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Positioned(
               width: mq.width,
               bottom: mq.height * .15,
-              child: Center(
+              child:const Center(
                 child: Text(
                   "MADE IN INDIA WITH ❤️",
                   style: TextStyle(

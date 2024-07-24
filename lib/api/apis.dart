@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chat_grow/models/chat_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -15,6 +16,18 @@ class APIs {
   static User get user => auth.currentUser!;
 
   static late ChatUser me;
+
+  static FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  static Future<void> getFirebaseMessagingToken() async {
+    await messaging.requestPermission();
+    await messaging.getToken().then((t) {
+      if (t != null) {
+        me.pushToken = t;
+        print("Push Token : "+me.pushToken);
+      }
+    });
+  }
 
   //check userExist or not
   static Future<bool> userExist() async {
@@ -52,6 +65,8 @@ class APIs {
     await firestore.collection("users").doc(user.uid).get().then((user) async {
       if (user.exists) {
         me = ChatUser.fromJson(user.data()!);
+        await getFirebaseMessagingToken();
+        APIs.updateOnlineStatus(true);
       } else {
         await createUser().then((value) => getSelfInfo());
       }
@@ -97,11 +112,12 @@ class APIs {
       ChatUser user) {
     return firestore
         .collection("chats/${getConversationId(user.id)}/messages/")
-        .orderBy("sent",descending: true)
+        .orderBy("sent", descending: true)
         .snapshots();
   }
 
-  static Future<void> sendMessage(ChatUser chatUser, String msg , Type type) async {
+  static Future<void> sendMessage(
+      ChatUser chatUser, String msg, Type type) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Message message = Message(
         toId: chatUser.id,
@@ -126,18 +142,20 @@ class APIs {
       ChatUser user) {
     return firestore
         .collection("chats/${getConversationId(user.id)}/messages/")
-        .orderBy("sent",descending: true)
+        .orderBy("sent", descending: true)
         .limit(1)
         .snapshots();
   }
-  static Future<void> sendChatImage(ChatUser chatuser,File file) async{
+
+  static Future<void> sendChatImage(ChatUser chatuser, File file) async {
     try {
       final ext = file.path.split(".").last;
-      final ref = storage.ref().child("images/${getConversationId(chatuser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext");
+      final ref = storage.ref().child(
+          "images/${getConversationId(chatuser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext");
 
       // Upload the file and wait for completion
       final uploadTask =
-      ref.putFile(file, SettableMetadata(contentType: "image/$ext"));
+          ref.putFile(file, SettableMetadata(contentType: "image/$ext"));
       final snapshot = await uploadTask;
 
       print("Data transferred: ${snapshot.bytesTransferred / 1000} KB");
@@ -145,13 +163,12 @@ class APIs {
       // Get the download URL and update the user's profile image
       final imageUrl = await ref.getDownloadURL();
       await sendMessage(chatuser, imageUrl, Type.image);
-
     } catch (e) {
       print("Failed to send picture: $e");
     }
   }
 
-  static Future<String> getUserProfileImage() async{
+  static Future<String> getUserProfileImage() async {
     DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection("users")
         .doc(user.uid)
@@ -159,4 +176,23 @@ class APIs {
     return ChatUser.fromJson(userDoc as Map<String, dynamic>).image;
   }
 
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getUserInfo(
+      ChatUser chatUser) {
+    return firestore
+        .collection("users")
+        .where("id", isEqualTo: chatUser.id)
+        .snapshots();
+  }
+
+  static Future<void> updateOnlineStatus(bool isOnline) async {
+    firestore.collection("users").doc(user.uid).update({
+      "is_online": isOnline,
+      "last_active": DateTime.now().millisecondsSinceEpoch.toString(),
+      "push_token" : me.pushToken,
+    });
+  }
+
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getSelfProfileImage() async {
+    return await firestore.collection("users").doc(user.uid).get();
+  }
 }

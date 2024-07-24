@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_grow/api/apis.dart';
 import 'package:chat_grow/helper/dialogs.dart';
 import 'package:chat_grow/models/chat_user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -36,10 +37,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: FloatingActionButton(
             onPressed: () async {
               Dialogs.showProgressBar(context);
+              APIs.updateOnlineStatus(false);
               await APIs.auth.signOut().then((value) async {
                 await GoogleSignIn().signOut().then((value) {
                   Navigator.pop(context);
                   Navigator.pop(context);
+                  APIs.auth = FirebaseAuth.instance;
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (_) => LooginScreen()));
                 });

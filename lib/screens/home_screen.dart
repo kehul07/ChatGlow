@@ -4,6 +4,7 @@ import 'package:chat_grow/screens/profile_screen.dart';
 import 'package:chat_grow/widgets/chat_user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../main.dart';
@@ -31,6 +32,23 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     APIs.getSelfInfo();
      // i = APIs.me;
+
+    SystemChannels.lifecycle.setMessageHandler((message){
+
+      if(APIs.auth.currentUser!=null){
+        if(message.toString().contains("pause")){
+          APIs.updateOnlineStatus(false);
+        }
+
+        if(message.toString().contains("resume")){
+          APIs.updateOnlineStatus(true);
+        }
+      }
+
+
+
+        return Future.value(message);
+    });
   }
 
   @override
@@ -74,25 +92,51 @@ class _HomeScreenState extends State<HomeScreen> {
               IconButton(onPressed: () {
                 setState(() {
                   _isSearching = !_isSearching;
-
                 });
               }, icon: Icon(_isSearching? CupertinoIcons.clear_circled_solid : Icons.search)),
               InkWell(
                 onTap: () => Navigator.push(context,MaterialPageRoute(builder: (_)=>ProfileScreen(user: APIs.me))),
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(mq.height * 0.05),
-                    child: CachedNetworkImage(
-                      height: mq.height * 0.035,
-                      width: mq.height * 0.035,
-                      fit: BoxFit.fill,
-                      imageUrl:APIs.user.photoURL.toString(),
-                      errorWidget: (context, url, error) => CircleAvatar(
-                        child:const Icon(CupertinoIcons.person),
-                      ),
-                    ),
-                  ),
+                  child: FutureBuilder(
+                    future: APIs.getSelfProfileImage(),
+                    builder: (context,snapshot){
+                      var data = snapshot.data!.data();
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(mq.height * 0.05),
+                          child: CachedNetworkImage(
+                            height: mq.height * 0.035,
+                            width: mq.height * 0.035,
+                            fit: BoxFit.fill,
+                            // APIs.user.photoURL.toString()
+                            imageUrl: APIs.user.photoURL.toString(),
+                            errorWidget: (context, url, error) =>
+                                CircleAvatar(
+                                  child: const Icon(CupertinoIcons.person),
+                                ),
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      }else {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(mq.height * 0.05),
+                          child: CachedNetworkImage(
+                            height: mq.height * 0.035,
+                            width: mq.height * 0.035,
+                            fit: BoxFit.fill,
+                            // APIs.user.photoURL.toString()
+                            imageUrl: data?["image"],
+                            errorWidget: (context, url, error) =>
+                                CircleAvatar(
+                                  child: const Icon(CupertinoIcons.person),
+                                ),
+                          ),
+                        );
+                      }
+                    },
+                  )
                 ),
               ),
             ],

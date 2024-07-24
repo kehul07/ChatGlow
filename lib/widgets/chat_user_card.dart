@@ -4,6 +4,7 @@ import 'package:chat_grow/helper/my_date_util.dart';
 import 'package:chat_grow/models/chat_user.dart';
 import 'package:chat_grow/models/message.dart';
 import 'package:chat_grow/screens/chat_screen.dart';
+import 'package:chat_grow/widgets/dialogs/profile_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -40,14 +41,21 @@ class _ChatItemState extends State<ChatUserCardItem> {
               }
               return ListTile(
                 // leading: CircleAvatar(child: Icon(CupertinoIcons.person),),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(mq.height * 0.3),
-                  child: CachedNetworkImage(
-                    height: mq.height * 0.055,
-                    width: mq.height * 0.055,
-                    imageUrl: widget.user.image,
-                    errorWidget: (context, url, error) => CircleAvatar(
-                      child: Icon(CupertinoIcons.person),
+                leading: InkWell(
+                  onTap: (){
+                    showDialog(
+                        context: context,
+                        builder: (_) => ProfileDialog(user: widget.user));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * 0.3),
+                    child: CachedNetworkImage(
+                      height: mq.height * 0.055,
+                      width: mq.height * 0.055,
+                      imageUrl: widget.user.image,
+                      errorWidget: (context, url, error) => CircleAvatar(
+                        child: Icon(CupertinoIcons.person),
+                      ),
                     ),
                   ),
                 ),

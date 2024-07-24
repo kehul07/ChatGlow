@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_grow/helper/my_date_util.dart';
 import 'package:chat_grow/models/chat_user.dart';
 import 'package:chat_grow/screens/profile_screen.dart';
+import 'package:chat_grow/screens/view_profile.dart';
 import 'package:chat_grow/widgets/message_card.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
@@ -54,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
         },
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize:const Size.fromHeight(60),
+            preferredSize: const Size.fromHeight(60),
             child: _appBar(),
           ),
           backgroundColor: const Color.fromARGB(255, 234, 248, 255),
@@ -144,50 +147,64 @@ class _ChatScreenState extends State<ChatScreen> {
         onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) => ProfileScreen(user: widget.user))),
-        child: Row(
-          children: [
-            IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.black54,
-                )),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(mq.height * 0.3),
-              child: CachedNetworkImage(
-                height: mq.height * 0.05,
-                width: mq.height * 0.05,
-                imageUrl: widget.user.image,
-                errorWidget: (context, url, error) => CircleAvatar(
-                  child: Icon(CupertinoIcons.person),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+                builder: (_) => ViewProfileScreen(user: widget.user))),
+        child: StreamBuilder(
+          stream: APIs.getUserInfo(widget.user),
+          builder: (context, snapshot) {
+            final data = snapshot.data?.docs;
+            final list =
+                data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+
+            return Row(
               children: [
-                Text(
-                  widget.user.name,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500),
+                IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.black54,
+                    )),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(mq.height * 0.3),
+                  child: CachedNetworkImage(
+                    height: mq.height * 0.05,
+                    width: mq.height * 0.05,
+                    imageUrl:
+                        list.isNotEmpty ? list[0].image : widget.user.image,
+                    errorWidget: (context, url, error) => CircleAvatar(
+                      child: Icon(CupertinoIcons.person),
+                    ),
+                  ),
                 ),
                 SizedBox(
-                  height: 2,
+                  width: 10,
                 ),
-                Text(
-                  "Last seen not availbale",
-                  style: TextStyle(color: Colors.black54, fontSize: 12),
-                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      list.isNotEmpty ? list[0].name : widget.user.name,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      list.isNotEmpty
+                          ? list[0].isOnline
+                              ? "Online"
+                              : MyDateUtil.getLastActiveTime(context: context, lastActive: list[0].lastActive)
+                          : MyDateUtil.getLastActiveTime(context: context, lastActive: widget.user.lastActive),
+                      style: TextStyle(color: Colors.black54, fontSize: 12),
+                    ),
+                  ],
+                )
               ],
-            )
-          ],
+            );
+          },
         ),
       ),
     );
