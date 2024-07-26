@@ -242,11 +242,10 @@ class APIs {
         "message": {
           "token": chatUser.pushToken,
           "notification": {
-            "body": msg,
             "title": me.name,
+            "body": msg,
             "android_channel_id": "chats",
           },
-          "data": {"some_data": "User ID:${me.id}"}
         }
       };
 
