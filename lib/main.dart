@@ -1,14 +1,21 @@
-import 'package:chat_grow/auth/login_screen.dart';
-import 'package:chat_grow/screens/home_screen.dart';
 import 'package:chat_grow/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
 import 'firebase_options.dart';
 late Size mq;
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  var result = await FlutterNotificationChannel().registerNotificationChannel(
+      description: 'For Showing Message Notification',
+      id: 'chats',
+      importance: NotificationImportance.IMPORTANCE_HIGH,
+      name: 'Chats');
+
+  print('\nNotification Channel Result: $result');
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]).then((value)async{
     await Firebase.initializeApp(
@@ -32,11 +39,11 @@ class MyApp extends StatelessWidget {
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)
         primarySwatch: Colors.blue,
         useMaterial3: true,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black
         ),
 
-        appBarTheme: AppBarTheme(
+        appBarTheme:const AppBarTheme(
           elevation: 1,
           centerTitle: true,
           titleTextStyle: TextStyle(
@@ -46,7 +53,7 @@ class MyApp extends StatelessWidget {
         )
       ),
 
-      home:SplashScreen() ,
+      home:const SplashScreen() ,
     );
   }
 }

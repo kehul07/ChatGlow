@@ -26,7 +26,7 @@ class _ChatItemState extends State<ChatUserCardItem> {
       onTap: () => Navigator.push(context,
           MaterialPageRoute(builder: (_) => ChatScreen(user: widget.user))),
       child: Card(
-          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          margin:const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           elevation: 2,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -53,7 +53,7 @@ class _ChatItemState extends State<ChatUserCardItem> {
                       height: mq.height * 0.055,
                       width: mq.height * 0.055,
                       imageUrl: widget.user.image,
-                      errorWidget: (context, url, error) => CircleAvatar(
+                      errorWidget: (context, url, error) => const CircleAvatar(
                         child: Icon(CupertinoIcons.person),
                       ),
                     ),

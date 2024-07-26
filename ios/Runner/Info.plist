@@ -58,9 +58,15 @@
     		</array>
     	</dict>
     </array>
+
+    //for picking picture from gallery and camera
     <key>NSPhotoLibraryUsageDescription</key>
     <string>App requires access to the photo library for picking pictures.</string>
     <key>NSCameraUsageDescription</key>
     <string>App requires access to the camera for tacking pictures.</string>
+
+    //for saving image in gallery
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires read and write access to the photo library</string>
 </dict>
 </plist>

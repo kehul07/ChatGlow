@@ -20,16 +20,16 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 2),(){
+    Future.delayed(const Duration(seconds: 2),(){
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       SystemChrome.setSystemUIOverlayStyle( const SystemUiOverlayStyle( systemNavigationBarColor: Colors.white,
           statusBarColor: Colors.white));
 
       if(APIs.auth.currentUser!=null){
         print("\nUser : ${APIs.auth.currentUser}");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomeScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const HomeScreen()));
       }else{
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LooginScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const LooginScreen()));
       }
 
     });

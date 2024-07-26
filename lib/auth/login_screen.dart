@@ -4,9 +4,7 @@ import 'package:chat_grow/api/apis.dart';
 import 'package:chat_grow/helper/dialogs.dart';
 import 'package:chat_grow/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../main.dart';
@@ -24,7 +22,7 @@ class _LooginScreenState extends State<LooginScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(milliseconds: 500),(){
+    Future.delayed(const Duration(milliseconds: 500),(){
      setState(() {
        _isanimated=true;
      });
@@ -87,12 +85,12 @@ class _LooginScreenState extends State<LooginScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text("Welcome to ChatGlow"),
+        title:const Text("Welcome to ChatGlow"),
       ),
       body: Stack(
         children: [
           AnimatedPositioned(
-            duration: Duration(seconds: 1),
+            duration:const Duration(seconds: 1),
               top: mq.height * .15,
               width: mq.width * .5,
               right: _isanimated ? mq.width * .25 : -mq.width*.5,
@@ -109,13 +107,13 @@ class _LooginScreenState extends State<LooginScreen> {
                 ),
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    shape: StadiumBorder(),
+                    shape:const StadiumBorder(),
                     backgroundColor: Colors.blue.shade50
                   ),
                   onPressed: (){
                     _handleGoogleClickBtn();
                   }, label: RichText(
-                  text: TextSpan(
+                  text:const TextSpan(
                     style: TextStyle(color: Colors.black,fontSize: 18),
                     children: [
                       TextSpan(text: "Login with"),

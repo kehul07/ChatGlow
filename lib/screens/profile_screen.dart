@@ -30,10 +30,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Profile"),
+          title:const Text("Profile"),
         ),
         floatingActionButton: Padding(
-          padding: EdgeInsets.only(bottom: 10),
+          padding:const EdgeInsets.only(bottom: 10),
           child: FloatingActionButton(
             onPressed: () async {
               Dialogs.showProgressBar(context);
@@ -44,16 +44,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.pop(context);
                   APIs.auth = FirebaseAuth.instance;
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (_) => LooginScreen()));
+                      MaterialPageRoute(builder: (_) =>const LooginScreen()));
                 });
               });
             },
-            child: Icon(
+            backgroundColor: Colors.red,
+            shape:const CircleBorder(),
+            child:const Icon(
               Icons.login_outlined,
               color: Colors.white,
             ),
-            backgroundColor: Colors.red,
-            shape: CircleBorder(),
           ),
         ),
         body: Padding(
@@ -99,11 +99,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: MaterialButton(
                           elevation: 1,
                           color: Colors.white,
-                          shape: CircleBorder(),
+                          shape:const CircleBorder(),
                           onPressed: () {
                             _showBottomSheet();
                           },
-                          child: Icon(
+                          child:const Icon(
                             Icons.edit,
                             color: Colors.blue,
                           ),
@@ -116,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   Text(
                     widget.user.email,
-                    style: TextStyle(color: Colors.black54, fontSize: 16),
+                    style:const TextStyle(color: Colors.black54, fontSize: 16),
                   ),
                   SizedBox(
                     width: mq.width,
@@ -134,9 +134,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(color: Colors.blue)),
+                            borderSide:const BorderSide(color: Colors.blue)),
                         hintText: "eg.Happy Singh",
-                        label: Text("Name")),
+                        label:const Text("Name")),
                   ),
                   SizedBox(
                     width: mq.width,
@@ -154,11 +154,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(
+                            borderSide:const BorderSide(
                               color: Colors.blue,
                             )),
                         hintText: "eg.Feeling Happy",
-                        label: Text("About")),
+                        label:const Text("About")),
                   ),
                   SizedBox(
                     width: mq.width,
@@ -174,18 +174,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         });
                       }
                     },
-                    label: Text(
+                    label:const Text(
                       "Update",
                       style: TextStyle(fontSize: 16),
                     ),
-                    icon: Icon(
+                    icon:const Icon(
                       Icons.edit,
                       size: 25,
                     ),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.purple.shade900,
                         foregroundColor: Colors.white,
-                        shape: StadiumBorder(),
+                        shape:const StadiumBorder(),
                         minimumSize: Size(mq.width * .4, mq.height * 0.06)),
                   )
                 ],
@@ -200,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showBottomSheet() {
     showModalBottomSheet(
         context: context,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         builder: (_) {
@@ -209,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 top: mq.height * 0.03, bottom: mq.height * 0.05),
             shrinkWrap: true,
             children: [
-              Text(
+              const Text(
                 "Pic Profile Picture",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
@@ -234,12 +234,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }
 
                     },
-                    child: Image.asset("images/add_image.png"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      shape: CircleBorder(),
+                      shape:const CircleBorder(),
                       fixedSize: Size(mq.width * 0.3, mq.height * 0.15),
                     ),
+                    child: Image.asset("images/add_image.png"),
                   ),
                   ElevatedButton(
                     onPressed: () async{
@@ -255,12 +255,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }
 
                     },
-                    child: Image.asset("images/camera.png"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      shape: CircleBorder(),
+                      shape:const CircleBorder(),
                       fixedSize: Size(mq.width * 0.3, mq.height * 0.15),
                     ),
+                    child: Image.asset("images/camera.png"),
                   )
                 ],
               )
