@@ -244,8 +244,13 @@ class APIs {
           "notification": {
             "title": me.name,
             "body": msg,
-            "android_channel_id": "chats",
+            // "android_channel_id": "chats",
           },
+          "android": {
+            "notification": {
+              "channel_id": "chats",
+            }
+          }
         }
       };
 
@@ -332,7 +337,6 @@ class APIs {
       return true;
     } else {
       //user doesn't exists
-
       return false;
     }
   }
